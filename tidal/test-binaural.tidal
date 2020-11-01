@@ -1,0 +1,12 @@
+d1 $ slow 4 $ n "1 2 3 4 5 6 7 8" # s "numbers" # pan "0 0.125 0.25 0.375 0.5 0.625 0.75 0.875"
+d2 $ s "hh lt bd sn ht mt arpy alphabet" # n "<1 2 13>" # pan "0 0.125 0.25 0.375 0.5 0.625 0.75 <0.875 0.375 0.625 0.5>"
+
+d2 $ slow 2 $ sound "hh:2*4 hh:1*4" # pan "[0.0625 0.5625]*2"
+d2 $ sound "hh*8" # pan "0.0625"
+d2 $ sound "hh*12" # pan (slow 8 $ saw)
+
+d1 $ sound "bd*4 sn*4" # pan (slow 3 $ saw)
+d1 $ sound "bd sn:1 sn:2 mt*2" # pan (slow 4 $ saw) # vowel "a e i"
+d1 $ juxBy 0.125 rev $ sound "bd cp*2 sn:2 mt*3" # pan (slow 5 $ saw)
+
+hush
