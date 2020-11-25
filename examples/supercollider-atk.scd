@@ -59,7 +59,7 @@ Ndef(\mono, {
 	// var mono = PlayBuf.ar(1, ~monoBuf, BufRateScale.kr(~monoBuf), loop: 1);
 	var ambi = FoaEncode.ar(mono, ~omni);
 	// angle = 0.5pi -> push to plane wave
-	ambi = FoaPush.ar(ambi, angle: MouseY.kr(0, 0.5pi), theta: MouseX.kr(pi, -pi), phi: 0pi);
+	ambi = FoaPush.ar(ambi, angle: MouseY.kr(0, 0.5pi).fold(0, 0.5pi), theta: MouseX.kr(pi, -pi), phi: 0pi);
 	ambi
 }).fadeTime_(2).play;
 )
@@ -70,7 +70,7 @@ Ndef(\mono, {
 	var mono = SinOscFB.ar([55,55.5], 1.2, Decay.ar(Impulse.ar(0.5), 2, 0.5)).sum + PinkNoise.ar(0.5);
 	// var mono = PlayBuf.ar(1, ~monoBuf, BufRateScale.kr(~monoBuf), loop: 1);
 	var ambi = FoaEncode.ar(mono, ~freqSpreader);
-	ambi = FoaPush.ar(ambi, angle: MouseY.kr(0, 0.5pi), theta: MouseX.kr(pi, -pi), phi: 0pi);
+	ambi = FoaPush.ar(ambi, angle: MouseY.kr(0, 0.5pi).fold(0, 0.5pi), theta: MouseX.kr(pi, -pi), phi: 0pi);
 	ambi
 });
 )
@@ -81,7 +81,7 @@ Ndef(\mono, {
 	var mono = SinOscFB.ar([55,55.5], 1.2, Decay.ar(Impulse.ar(0.5), 2, 0.5)).sum + PinkNoise.ar(0.5);
 	// var mono = PlayBuf.ar(1, ~monoBuf, BufRateScale.kr(~monoBuf), loop: 1);
 	var ambi = FoaEncode.ar(mono, ~freqDiffuse);
-	ambi = FoaPush.ar(ambi, angle: MouseY.kr(0, 0.5pi), theta: MouseX.kr(pi, -pi), phi: 0pi);
+	ambi = FoaPush.ar(ambi, angle: MouseY.kr(0, 0.5pi).fold(0, 0.5pi), theta: MouseX.kr(pi, -pi), phi: 0pi);
 	ambi
 });
 )
@@ -92,7 +92,7 @@ Ndef(\mono, {
 	var mono = PlayBuf.ar(1, ~monoBuf, BufRateScale.kr(~monoBuf), loop: 1);
 	var ambi = FoaEncode.ar(mono, ~freqDiffuse);
 	var azim = MouseX.kr(pi, -pi);
-	ambi = FoaPush.ar(ambi, angle: MouseY.kr(0, 0.5pi), theta: azim, phi: 0pi);
+	ambi = FoaPush.ar(ambi, angle: MouseY.kr(0, 0.5pi).fold(0, 0.5pi), theta: azim, phi: 0pi);
 	ambi = ambi + FoaPush.ar(FoaEncode.ar(DelayL.ar(LPF.ar(mono, 1800), 0.2, 0.08), ~freqDiffuse), 0.3pi, theta: azim+0.8pi, phi: 0pi, mul: -6.dbamp);
 	ambi
 });
@@ -105,7 +105,7 @@ Ndef(\mono, {
 	var ambi = FoaEncode.ar(mono, ~freqDiffuse);
 	var azim = MouseX.kr(pi, -pi);
 	var reverb = NHHall.ar(mono!2, 6, 0.5).mean;
-	ambi = FoaPush.ar(ambi, angle: MouseY.kr(0, 0.5pi), theta: azim, phi: 0pi);
+	ambi = FoaPush.ar(ambi, angle: MouseY.kr(0, 0.5pi).fold(0, 0.5pi), theta: azim, phi: 0pi);
 	ambi = ambi + FoaEncode.ar(reverb, ~freqDiffuse, -12.dbamp);
 	ambi
 });
@@ -116,7 +116,7 @@ Ndef(\mono, {
 Ndef(\stereo, {
 	var stereo = PlayBuf.ar(2, ~stereoBuf, BufRateScale.kr(~stereoBuf), loop: 1);
 	var ambi = FoaEncode.ar(stereo, ~stereo);
-	ambi = FoaZoom.ar(ambi, MouseY.kr(0, 0.5pi), mul: 0.7);
+	ambi = FoaZoom.ar(ambi, MouseY.kr(0, 0.5pi).fold(0, 0.5pi), mul: 0.7);
 	ambi = FoaRotate.ar(ambi, MouseX.kr(pi, -pi));
 	ambi
 }).fadeTime_(2).play;
@@ -126,7 +126,7 @@ Ndef(\stereo, {
 Ndef(\stereo, {
 	var stereo = PlayBuf.ar(2, ~stereoBuf, BufRateScale.kr(~stereoBuf), loop: 1);
 	var ambi = FoaEncode.ar(stereo, ~superStereo);
-	ambi = FoaZoom.ar(ambi, MouseY.kr(0, 0.5pi), mul: 0.7);
+	ambi = FoaZoom.ar(ambi, MouseY.kr(0, 0.5pi).fold(0, 0.5pi), mul: 0.7);
 	ambi = FoaRotate.ar(ambi, MouseX.kr(pi, -pi));
 	ambi
 });
@@ -167,7 +167,7 @@ Ndef(\multisource).clear(8)
 // Play with Doppler shift and and a source moving in 3D
 Ndef(\doppler, {
 	var mono = VarSaw.ar([55, 87, 113, 217, 449] * LFPulse.kr(1).range(1.5,2)).sum;
-	var pos = Slew.kr(\pos.kr([1,5,0]).lag(2), 20, 20);
+	var pos = Slew.kr(\pos.kr([2,200,0.5]).lag(2), 20, 20);
 	var minDist = 0.3;
 	var dist = pos.collect(_.squared).sum.sqrt.max(minDist);
 	var amp = dist.pow(-0.8) / minDist.pow(-0.8);

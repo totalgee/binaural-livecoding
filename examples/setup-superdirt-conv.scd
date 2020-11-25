@@ -64,6 +64,8 @@ s.waitForBoot {
 		// Rotate panning to ensure front is front
 		var shiftPan = PanAz.ar(8, in, (0..7) / 4 - 0.125, orientation: 0).sum;
 		var binaural = ~hrtfBufs.collect{ arg bufs, i;
+			// (Use PartConv instead of Convolution2 if you need
+			// to convolve with large buffers)
 			Convolution2.ar(shiftPan[i], bufs, 0, (bufs[0].numFrames/2-1).nextPowerOfTwo);
 		}.sum * ~hrtfBufs.size.sqrt.reciprocal;
 		binaural ++ Silent.ar(6)
