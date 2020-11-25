@@ -40,7 +40,7 @@ s.waitForBoot {
 		// At this point, we have 4 channels representing a first-order ambisonic
 		// signal (in B-format). We want to output (binaural) stereo and silence
 		// the extra two channels.
-		FoaDecode.ar(in, ~decoder) ++ (Silence.ar ! 2);
+		FoaDecode.ar(in, ~decoder) ++ Silent.ar(2);
 	};
 };
 )
@@ -157,7 +157,7 @@ Ndef(\multisource, {
 		ambi = FoaPush.ar(ambi, angle: 0.4pi, theta: i.linlin(0, n, -pi, pi) + Rand(-0.1pi, 0.1pi), phi: Rand(-0.1pi, 0.1pi));
 		ambi
 	}.sum * n.sqrt.reciprocal;
-	Limiter.ar(ambi + FoaEncode.ar(reverb, ~freqDiffuse, -9.dbamp))
+	Limiter.ar(ambi + FoaEncode.ar(reverb, ~freqDiffuse, -9.dbamp), 0.9)
 }).fadeTime_(8).play
 )
 
@@ -166,19 +166,21 @@ Ndef(\multisource).clear(8)
 (
 // Play with Doppler shift and and a source moving in 3D
 Ndef(\doppler, {
-	var mono = VarSaw.ar([55, 87, 113, 217, 449]).sum;
-	var pos = Slew.kr(\pos.kr([1,5,0]).lag(1), 20, 20);
-	var dist = pos.collect(_.squared).sum.sqrt.max(0.3);
-	var amp = dist.pow(-0.8) / 2.62;
+	var mono = VarSaw.ar([55, 87, 113, 217, 449] * LFPulse.kr(1).range(1.5,2)).sum;
+	var pos = Slew.kr(\pos.kr([1,5,0]).lag(2), 20, 20);
+	var minDist = 0.3;
+	var dist = pos.collect(_.squared).sum.sqrt.max(minDist);
+	var amp = dist.pow(-0.8) / minDist.pow(-0.8);
 	var azim = atan2(pos[1], pos[0]);
 	var elev = asin((pos / dist)[2]);
 
 	var ambi = FoaEncode.ar(mono * amp, ~freqDiffuse);
-	ambi = DelayL.ar(FoaPush.ar(ambi, 0.4pi, azim, elev), 0.5, (dist/340).lag(1));
+	ambi = DelayL.ar(FoaPush.ar(ambi, 0.45pi, azim, elev), 0.5, (dist/340).lag(1));
 	ambi
 }).fadeTime_(2).play
 )
 
-Ndef(\doppler).set(\pos, [[2, 10, 0.5]])
-Ndef(\doppler).set(\pos, [[2, -10, 0.5]])
+Ndef(\doppler).set(\pos, [[2, 200, 0.5]])
+Ndef(\doppler).set(\pos, [[2, -200, 0.5]])
 Ndef(\doppler).set(\pos, [[rrand(-12,12.0),rrand(-12,12.0),rrand(-3,3.0)].postln])
+Ndef(\doppler).clear(4)
