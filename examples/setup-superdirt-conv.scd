@@ -26,12 +26,12 @@ s.latency = 0.2;
 
 s.scope; // show 8 channels
 
-// Ensure you have some HRTF files (for the eight virtual speaker directions)
-// in the local "hrtf" directory, and the names of the ones you want
-// are set below under "hrtfFiles".
+// Ensure you have impulse response files (for the eight virtual
+// speaker directions) in the local "hrir" directory, with the names
+// of the ones you want to use set below, under "hrirFiles".
 (
 s.waitForBoot {
-	var hrtfPath, hrtfFiles;
+	var hrirPath, hrirFiles;
 	~binauralGroup = ~binauralGroup ?? {
 		var controller;
 		var group = Group.after(s.defaultGroup).register;
@@ -43,8 +43,8 @@ s.waitForBoot {
 	s.sync;
 	Ndef(\outfx).parentGroup_(~binauralGroup).bus_(Bus(\audio, 0, 8, s));
 	s.sync;
-	hrtfPath = "../hrtf/D1_BRIR_WAV_48/";
-	hrtfFiles = [
+	hrirPath = "../hrir/D1_BRIR_WAV_48/";
+	hrirFiles = [
 		"azi_180,0_ele_0,0.wav", // behind
 		"azi_135,0_ele_0,0.wav",
 		"azi_90,0_ele_0,0.wav", // left
@@ -53,28 +53,28 @@ s.waitForBoot {
 		"azi_315,0_ele_0,0.wav",
 		"azi_270,0_ele_0,0.wav", // right
 		"azi_225,0_ele_0,0.wav",
-	].collect(hrtfPath ++ _);
-	if (~hrtfBufs.notNil) {
-		~hrtfBufs.do{ arg bufs; bufs.do{ arg buf; buf.free} }
+	].collect(hrirPath ++ _);
+	if (~hrirBufs.notNil) {
+		~hrirBufs.do{ arg bufs; bufs.do{ arg buf; buf.free} }
 	};
-	~hrtfBufs = hrtfFiles.collect{ arg path; 2.collect{ arg ch; Buffer.readChannel(s, path.resolveRelative, channels: [ch]) } };
+	~hrirBufs = hrirFiles.collect{ arg path; 2.collect{ arg ch; Buffer.readChannel(s, path.resolveRelative, channels: [ch]) } };
 	s.sync;
 	Ndef(\outfx)[999] =  \filter -> { arg in;
 		// At this point, we have 8 azimuth-panned channels in a circle (45 degree spacing)
 		// Rotate panning to ensure front is front
 		var shiftPan = PanAz.ar(8, in, (0..7) / 4 - 0.125, orientation: 0).sum;
-		var binaural = ~hrtfBufs.collect{ arg bufs, i;
+		var binaural = ~hrirBufs.collect{ arg bufs, i;
 			// (Use PartConv instead of Convolution2 if you need
 			// to convolve with large buffers)
 			Convolution2.ar(shiftPan[i], bufs, 0, (bufs[0].numFrames/2-1).nextPowerOfTwo);
-		}.sum * ~hrtfBufs.size.sqrt.reciprocal;
+		}.sum * ~hrirBufs.size.sqrt.reciprocal;
 		binaural ++ Silent.ar(6)
 	};
 }
 )
 
 
-// You can try different HRTFs (impulse responses) from:
+// You can try different HRIRs (impulse responses) from:
 //   SADIE: https://www.york.ac.uk/sadie-project/database.html (non-dry, with reverb)
 //   Listen: http://recherche.ircam.fr/equipes/salles/listen/download.html
 //   CIPIC: https://www.ece.ucdavis.edu/cipic/spatial-sound/hrtf-data/
@@ -83,8 +83,8 @@ s.waitForBoot {
 
 // Try with other impulse responses
 (
-var hrtfPath = "../hrtf/IRC_1002_C/";
-var hrtfFiles = [
+var hrirPath = "../hrir/IRC_1002_C/";
+var hrirFiles = [
 	"IRC_1002_C_R0195_T180_P000.wav", // behind
 	"IRC_1002_C_R0195_T135_P000.wav",
 	"IRC_1002_C_R0195_T090_P000.wav", // left
@@ -93,11 +93,11 @@ var hrtfFiles = [
 	"IRC_1002_C_R0195_T315_P000.wav",
 	"IRC_1002_C_R0195_T270_P000.wav", // right
 	"IRC_1002_C_R0195_T225_P000.wav",
-].collect(hrtfPath ++ _);
-if (~hrtfBufs.notNil) {
-	~hrtfBufs.do{ arg bufs; bufs.do{ arg buf; buf.free} }
+].collect(hrirPath ++ _);
+if (~hrirBufs.notNil) {
+	~hrirBufs.do{ arg bufs; bufs.do{ arg buf; buf.free} }
 };
-~hrtfBufs = hrtfFiles.collect{ arg path; 2.collect{ arg ch; Buffer.readChannel(s, path.resolveRelative, channels: [ch]) } };
+~hrirBufs = hrirFiles.collect{ arg path; 2.collect{ arg ch; Buffer.readChannel(s, path.resolveRelative, channels: [ch]) } };
 )
 
 (
@@ -105,9 +105,9 @@ Ndef(\outfx)[999] =  \filter -> { arg in;
 	// At this point, we have 8 azimuth-panned channels in a circle (45 degree spacing)
 	// Rotate panning to ensure front is front
 	var shiftPan = PanAz.ar(8, in, (0..7) / 4 - 0.125, orientation: 0).sum;
-	var binaural = ~hrtfBufs.collect{ arg bufs, i;
+	var binaural = ~hrirBufs.collect{ arg bufs, i;
 		Convolution2.ar(shiftPan[i], bufs, 0, (bufs[0].numFrames/2-1).nextPowerOfTwo);
-	}.sum * ~hrtfBufs.size.sqrt.reciprocal;
+	}.sum * ~hrirBufs.size.sqrt.reciprocal;
 	// Add a touch of reverb, since these impulses are dry
 	JPverb.ar(binaural, 1.4, 0.2) * -18.dbamp + binaural ++ Silent.ar(6)
 };

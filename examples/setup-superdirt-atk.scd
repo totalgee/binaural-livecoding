@@ -14,12 +14,14 @@ s.waitForBoot {
 s.latency = 0.2;
 );
 
-// Quarks.install("atk-sc3")
-// Atk.createUserSupportDir
-// Atk.openUserSupportDir
+// Setup instructions (see also README.md in this directory!):
+//   Quarks.install("atk-sc3")
+//   Atk.createUserSupportDir
+//   Atk.openUserSupportDir
 // Install:
-// "kernels" from https://github.com/ambisonictoolkit/atk-kernels/releases/
-// and "matrices" from https://github.com/ambisonictoolkit/atk-matrices/releases/
+//   "kernels" from https://github.com/ambisonictoolkit/atk-kernels/releases/
+//   and "matrices" from https://github.com/ambisonictoolkit/atk-matrices/releases/
+
 (
 // Create encoder and decoder
 e = FoaEncoderMatrix.newOmni;
@@ -32,6 +34,11 @@ d = FoaDecoderKernel.newCIPIC(12); // id=21 is the large pinnae dummy and id=165
 )
 
 (
+// This trick with setting SuperDirt's defaultPanningFunction is from
+// a discussion: https://github.com/musikinformatik/SuperDirt/issues/141
+// You can see Damián's version here:
+//   https://github.com/munshkr/nobounds/blob/master/binaural_boot.scd
+
 // We set panning to it goes clockwise around the head.
 // Set up so that in "Tidal panning units":
 //   pan 0.5 is ahead/centre, 0.25 is left, 0.75 is right, 0 (or 1) is behind

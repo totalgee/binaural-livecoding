@@ -1,7 +1,11 @@
-## HRTF files (impulse responses)
+## HRIR files (directional head-related impulse responses)
 
 Put data files here (downloaded from whichever source you want),
 and load them as buffers from the SuperCollider code, for convolution.
+
+> In the frequency domain (when impulse responses are Fourier
+> transformed), they are known as **HRTFs** (head-related transfer
+> functions).
 
 Some downloads that might be tried:
 
