@@ -52,3 +52,12 @@ the final SC output, so any Ndefs or Synths played to the SC outputs
 are assumed to be in B-format (should have been encoded using
 `FoaEncode`), and will be decoded (in a Group following SC's default
 Group) to produce binaural stereo.
+
+If you want to experiment with higher-order ambisonics (2nd-5th order)
+in SuperCollider, you may try the
+[SC-HOA Quark](https://github.com/florian-grond/SC-HOA), now part of
+the normal Quark distribution. In particular, 3rd order (requiring 16
+audio channels for the spherical harmonics) seems to be a reasonable
+"sweet spot", offering considerably more spatial precision without
+overly-heavy CPU processing requirements. *To do: add an example
+using SC-HOA.*
