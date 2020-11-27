@@ -1,10 +1,19 @@
 # Binaural live coding
 
-<img align="left" height="300px" src="images/binaural-curious.jpg">
+<img align="left" height="400px" src="docs/binaural-curious.jpg">
 
-Materials for a workshop on binaural audio and -- you guessed it --
-live coding, with some "setup" examples to get started with
-SuperCollider and TidalCycles (SuperDirt).
+Materials for a workshop on binaural audio and (you guessed it) live
+coding, with some "setup" examples to get started with SuperCollider
+and TidalCycles (SuperDirt).
+
+For a higher-level overview of binaural audio, see the
+[slides](docs/toplapSlides.pdf) from our TOPLAP Barcelona workshop in
+November 2020, which were prepared and presented by Timothy Schmele.
+The workshop was a "three-hander", as Niklas Reppel also presented
+examples for live coding with binaural audio via a digital audio
+workstation and plugins, while Glen Fraser presented his
+SuperCollider and TidalCycles (SuperDirt) live coding workflows and
+the examples from this repository.
 
 See [README](examples/README.md) in the `examples` directory for help
 installing the Ambisonic Toolkit (ATK) in SuperCollider. Or just
@@ -16,7 +25,11 @@ The [other README](hrir/README.md) in the `hrir` directory gives a
 few links for sites to find head-related (directional) impulse
 responses, to use with the direct convolution approach.
 
+Once you've got the ATK and some impulse response files installed,
+you're ready to dive into the examples.
+
 ## TidalCycles (SuperDirt)
+
 If you use [TidalCycles](https://tidalcycles.org/), try one or both
 of the following setups. In both cases, the `pan` argument in
 Tidal/SuperDirt uses 0.5 for forward centre, 0.25 for left, 0.75 for
