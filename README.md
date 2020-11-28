@@ -63,8 +63,8 @@ of first-order ambisonic B-format (omnidirectional on channel 0,
 followed by directional spherical harmonics). A decoder Synth runs on
 the final SC output, so any Ndefs or Synths played to the SC outputs
 are assumed to be in B-format (should have been encoded using
-`FoaEncode`), and will be decoded (in a Group following SC's default
-Group) to produce binaural stereo.
+`FoaEncode`), and will be decoded (by a Synth in a Group following
+SC's default Group on the server) to produce binaural stereo.
 
 If you want to experiment with higher-order ambisonics (2nd-5th order)
 in SuperCollider, you may try the
@@ -73,4 +73,26 @@ the normal Quark distribution. In particular, 3rd order (requiring 16
 audio channels for the spherical harmonics) seems to be a reasonable
 "sweet spot", offering considerably more spatial precision without
 overly-heavy CPU processing requirements. *To do: add an example
-using SC-HOA.*
+using SC-HOA.* Another option is to use the excellent
+[VSTPlugin](https://git.iem.at/pd/vstplugin/-/releases) extension to
+instantiate VST encoding/decoding plugins -- such as those from
+[IEM](https://plugins.iem.at/) -- within SC Synths.
+
+## Routing audio to a DAW for binaural processing
+
+Niklas showed an alternative approach which can be used in live
+coding, using spatialization plug-ins running in a digital audio
+workstation. Audio sources are piped from SuperCollider to the DAW
+for binaural encoding/decoding there. Here are links to some tools
+shown in Niklas' part of the workshop:
+
+- [Anaglyph](http://anaglyph.dalembert.upmc.fr/) high-definition
+  binaural spatialization plugin.
+- [BlackHole](https://github.com/ExistentialAudio/BlackHole) for
+  routing audio between applications on macOS.
+- [SoundFlower](https://github.com/mattingalls/Soundflower/releases)
+  as an older alternative for inter-app audio routing on Mac (old but
+  may still work).
+- [IEM Plug-in Suite](https://plugins.iem.at/) for ambisonic encoding,
+  decoding, visualization and other effects.
+- [Reaper](https://www.reaper.fm/) is the DAW Niklas was using.
